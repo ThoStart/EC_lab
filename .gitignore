@@ -1,0 +1,4 @@
+# dont track content of cache
+evoman_framework-master/evoman/__pycache__/
+evoman_framework-master/evoman/Base/__pycache__/
+evoman_framework-master/__pycache__/
