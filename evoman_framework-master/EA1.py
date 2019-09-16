@@ -3,6 +3,9 @@ sys.path.insert(0, 'evoman')
 from environment import Environment
 from demo_controller import player_controller
 import numpy as np
+from deap import base, creator
+from deap import tools
+import random
 
 import time
 import glob, os
@@ -38,20 +41,32 @@ n_hidden = 10
 n_vars = (env.get_num_sensors()+1)*n_hidden + (n_hidden+1)*5 # multilayer with 10 hidden neurons
 dom_u = 1
 dom_l = -1
-npop = 10
+npop = 2
 gens = 30
 mutation = 0.2
 last_best = 0
 
 np.random.seed(112)
 
-#Play game for 10 population size, random init
-pop = np.random.uniform(1, -1, (npop,n_vars))
+creator.create("FitnessMax", base.Fitness, weights=(1.0,))
+creator.create("Individual", list, fitness=creator.FitnessMax)
 
-def simulate(env,x):
-    f,p,e,t = env.play(pcont=x)
-    return f
+toolbox = base.Toolbox()
+toolbox.register("attr_float", random.uniform, -1, 1)
+toolbox.register("individual", tools.initRepeat, creator.Individual,
+                 toolbox.attr_float, n=n_vars)
+toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
-fit_pop = np.array(list(map(lambda y: simulate(env, y), pop)))
+pop = toolbox.population(n=npop)
 
-print(fit_pop)
+def evaluate(individual):
+    f,p,e,t = env.play(pcont=np.array(individual))
+    return f,
+
+toolbox.register("evaluate", evaluate)
+
+fitnesses = list(map(toolbox.evaluate, pop))
+for ind, fit in zip(pop, fitnesses):
+    ind.fitness.values = fit
+
+print(pop[1].fitness)
