@@ -1,14 +1,14 @@
 import sys
+import time
+import os
+import random
+import numpy as np
+
 sys.path.insert(0, 'evoman')
 from environment import Environment
 from demo_controller import player_controller
-import numpy as np
-from deap import base, creator
-from deap import tools
-import random
+from deap import base, creator, tools
 
-import time
-import glob, os
 
 experiment_name = 'algorithm_one'
 if not os.path.exists(experiment_name):
@@ -25,20 +25,18 @@ env = Environment(experiment_name=experiment_name,
 
 # default environment fitness is assumed for experiment
 
-env.state_to_log() # checks environment state
+env.state_to_log()  # checks environment state
 
-
-####   Optimization for controller solution (best genotype-weights for phenotype-network): Ganetic Algorihm    ###
+# Optimization for controller solution (best genotype-weights for phenotype-network): Genetic Algorithm
 
 ini = time.time()  # sets time marker
 
-
 # genetic algorithm params
 
-run_mode = 'train' # train or test
+run_mode = 'train'  # train or test
 
 n_hidden = 10
-n_vars = (env.get_num_sensors()+1)*n_hidden + (n_hidden+1)*5 # multilayer with 10 hidden neurons
+n_vars = (env.get_num_sensors()+1)*n_hidden + (n_hidden+1)*5  # multilayer with 10 hidden neurons
 dom_u = 1
 dom_l = -1
 npop = 2
@@ -59,13 +57,16 @@ toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
 pop = toolbox.population(n=npop)
 
+
 def evaluate(individual):
-    f,p,e,t = env.play(pcont=np.array(individual))
+    f, p, e, t = env.play(pcont=np.array(individual))
     return f,
+
 
 toolbox.register("evaluate", evaluate)
 
 fitnesses = list(map(toolbox.evaluate, pop))
+
 for ind, fit in zip(pop, fitnesses):
     ind.fitness.values = fit
 
