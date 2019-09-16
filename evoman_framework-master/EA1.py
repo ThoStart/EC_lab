@@ -69,4 +69,4 @@ fitnesses = list(map(toolbox.evaluate, pop))
 for ind, fit in zip(pop, fitnesses):
     ind.fitness.values = fit
 
-print(pop[1].fitness)
+print('second individual fitness value: ', pop[1].fitness)
