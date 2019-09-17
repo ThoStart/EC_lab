@@ -94,6 +94,7 @@ if not os.path.exists(experiment_name+'/evoman_solstate'):
     start_gen = 0
     solutions = [pop, fitnesses]
     env.update_solutions(solutions)
+    ini_g = 0
 
 else:
 
@@ -103,10 +104,24 @@ else:
     pop = env.solutions[0]
     fit_pop = env.solutions[1]
 
+    best = np.argmax(fit_pop)
+    mean = np.mean(fit_pop)
+    std = np.std(fit_pop)
 
+    # finds last generation number
+    file_aux = open(experiment_name + '/gen.txt', 'r')
+    ini_g = int(file_aux.readline())
+    file_aux.close()
+
+# saves results for first pop
+file_aux = open(experiment_name + '/results.txt', 'a')
+file_aux.write('\n\ngen best mean std')
+file_aux.close()
 
 for g in range(gens):
+
     print("Generation: ", g)
+
     offspring = toolbox.select(pop, len(pop)) # we can vary tournament size here
     offspring = list(map(toolbox.clone, offspring))
 
@@ -132,11 +147,25 @@ for g in range(gens):
         ind.fitness.values = fit
 
 
-
     pop[:] = offspring
 
     fits = [ind.fitness.values[0] for ind in pop]
 
+    best = np.argmax(fits)
+    std = np.std(fits)
+    mean = np.mean(fits)
+
+    # saves results
+    file_aux = open(experiment_name + '/results.txt', 'a')
+    print('\n GENERATION ' + str(g) + ' ' + str(round(fits[best], 6)) + ' ' + str(round(mean, 6)) + ' ' + str(
+        round(std, 6)))
+    file_aux.write(
+        '\n' + str(g) + ' ' + str(round(fits[best], 6)) + ' ' + str(round(mean, 6)) + ' ' + str(round(std, 6)))
+    file_aux.close()
+
+    file_aux  = open(experiment_name+'/gen.txt','w')
+    file_aux.write(str(g))
+    file_aux.close()
 
     length = len(pop)
     mean = sum(fits) / length
@@ -147,7 +176,6 @@ for g in range(gens):
     print("  Max %s" % max(fits))
     print("  Avg %s" % mean)
     print("  Std %s" % std)
-
 
     solutions = [pop, fits]
     env.update_solutions(solutions)
