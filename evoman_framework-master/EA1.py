@@ -12,7 +12,7 @@ from deap import base, creator, tools
 
 ########################### Init Environment ############################
 
-experiment_name = 'algorithm_one'
+experiment_name = 'log_EA1'
 if not os.path.exists(experiment_name):
     os.makedirs(experiment_name)
 
@@ -42,7 +42,8 @@ n_vars = (env.get_num_sensors()+1)*n_hidden + (n_hidden+1)*5  # multilayer with 
 dom_u = 1
 dom_l = -1
 
-npop = 30
+npop = 2
+
 gens = 20
 
 mutation = 0.2
@@ -50,6 +51,8 @@ cxpb = 0.2
 last_best = 0
 indpb = 0.2
 tournsize = 5
+mu = 0
+sigma = 1
 
 np.random.seed(112)
 
@@ -74,22 +77,32 @@ toolbox.register("evaluate", evaluate)
 
 
 toolbox.register("mate", tools.cxTwoPoint)
-toolbox.register("mutate", tools.mutGaussian, mu=0, sigma=1, indpb=indpb)
+toolbox.register("mutate", tools.mutGaussian, mu=mu, sigma=sigma, indpb=indpb)
 toolbox.register("select", tools.selTournament, tournsize=tournsize)
 
 
-pop = toolbox.population(n=npop)
+########################### Init Population ############################
 
-# CXPB  is the probability with which two individuals are crossed
-# MUTPB is the probability for mutating an individual
-NGEN = 50
-CXPB = 0.5
-MUTPB = 0.2
+if not os.path.exists(experiment_name+'/evoman_solstate'):
+    print( '\nNEW EVOLUTION\n')
 
+    pop = toolbox.population(n=npop)
+    fitnesses = list(map(toolbox.evaluate, pop))
+    for ind, fit in zip(pop, fitnesses):
+        ind.fitness.values = fit
 
-fitnesses = list(map(toolbox.evaluate, pop))
-for ind, fit in zip(pop, fitnesses):
-    ind.fitness.values = fit
+    start_gen = 0
+    solutions = [pop, fitnesses]
+    env.update_solutions(solutions)
+
+else:
+
+    print('\nCONTINUING EVOLUTION\n')
+
+    env.load_state()
+    pop = env.solutions[0]
+    fit_pop = env.solutions[1]
+
 
 
 for g in range(gens):
@@ -134,4 +147,9 @@ for g in range(gens):
     print("  Max %s" % max(fits))
     print("  Avg %s" % mean)
     print("  Std %s" % std)
+
+
+    solutions = [pop, fits]
+    env.update_solutions(solutions)
+    env.save_state()
 
