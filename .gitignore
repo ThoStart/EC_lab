@@ -2,3 +2,12 @@
 evoman_framework-master/evoman/__pycache__/
 evoman_framework-master/evoman/Base/__pycache__/
 evoman_framework-master/__pycache__/
+evoman_framework-master/evoman/
+evoman_framework-master/algorithm_one/
+evoman_framework-master/.ipynb_checkpoints/
+evoman_framework-master/.DS_Store
+evoman_framework-master/test/
+evoman_framework-master/multi_demo/
+evoman_framework-master/controller_generalist_demo/
+evoman_framework-master/controller_specialist_demo/
+.DS_Store
