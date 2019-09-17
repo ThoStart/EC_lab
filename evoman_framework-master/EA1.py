@@ -78,27 +78,6 @@ toolbox.register("mutate", tools.mutGaussian, mu=0, sigma=1, indpb=indpb)
 toolbox.register("select", tools.selTournament, tournsize=tournsize)
 
 
-
-
-########################### Init Population ############################
-
-
-pop = toolbox.population(n=npop)
-
-# register the crossover operator
-toolbox.register("mate", tools.cxTwoPoint)
-
-# register a mutation operator with a probability to
-# flip each attribute/gene of 0.05
-toolbox.register("mutate", tools.mutPolynomialBounded(toolbox.individual, 2, -1, 1, indpb), indpb=0.05)
-
-# operator for selecting individuals for breeding the next
-# generation: each individual of the current generation
-# is replaced by the 'fittest' (best) of three individuals
-# drawn randomly from the current generation.
-toolbox.register("select", tools.selTournament, tournsize=3)
-
-
 pop = toolbox.population(n=npop)
 
 # CXPB  is the probability with which two individuals are crossed
