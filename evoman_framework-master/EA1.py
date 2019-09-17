@@ -41,8 +41,11 @@ n_hidden = 10
 n_vars = (env.get_num_sensors()+1)*n_hidden + (n_hidden+1)*5  # multilayer with 10 hidden neurons
 dom_u = 1
 dom_l = -1
+
+
 npop = 2
 gens = 20
+
 mutation = 0.2
 cxpb = 0.2
 last_best = 0
@@ -64,11 +67,14 @@ creator.create("FitnessMax", base.Fitness, weights=(1.0,))
 creator.create("Individual", list, fitness=creator.FitnessMax)
 
 toolbox = base.Toolbox()
+
 toolbox.register("attr_float", random.uniform, dom_l, dom_u)
 toolbox.register("individual", tools.initRepeat, creator.Individual,
                  toolbox.attr_float, n=n_vars)
+
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 toolbox.register("evaluate", evaluate)
+
 
 toolbox.register("mate", tools.cxTwoPoint)
 toolbox.register("mutate", tools.mutGaussian, mu=mu, sigma=sigma, indpb=indpb)
@@ -100,6 +106,7 @@ else:
 
 ################################## Evolution  ###################################
 
+
 for g in range(gens):
     print("Generation: ", g)
     offspring = toolbox.select(pop, len(pop)) # we can vary tournament size here
@@ -120,14 +127,18 @@ for g in range(gens):
 
     print("Evaluate")
 
+
     invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
     fitnesses = map(toolbox.evaluate, invalid_ind)
     for ind, fit in zip(invalid_ind, fitnesses):
         ind.fitness.values = fit
 
+
+
     pop[:] = offspring
 
     fits = [ind.fitness.values[0] for ind in pop]
+
 
     length = len(pop)
     mean = sum(fits) / length
@@ -139,8 +150,11 @@ for g in range(gens):
     print("  Avg %s" % mean)
     print("  Std %s" % std)
 
+
     ########################### Safe Evoman Log / Performance Log ############################
-    file_aux = open(experiment_name+'')
+    file_aux = open(experiment_name+'results.txt')
+    file_aux.write()
     solutions = [pop, fits]
     env.update_solutions(solutions)
     env.save_state()
+
