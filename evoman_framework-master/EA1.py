@@ -75,7 +75,7 @@ toolbox.register("mutate", tools.mutGaussian, mu=mu, sigma=sigma, indpb=indpb)
 toolbox.register("select", tools.selTournament, tournsize=tournsize)
 
 
-########################### Init Population ############################
+########################### Init Population (or read old file) ############################
 
 if not os.path.exists(experiment_name+'/evoman_solstate'):
     print( '\nNEW EVOLUTION\n')
@@ -97,6 +97,8 @@ else:
     pop = env.solutions[0]
     fit_pop = env.solutions[1]
 
+
+################################## Evolution  ###################################
 
 for g in range(gens):
     print("Generation: ", g)
@@ -137,6 +139,8 @@ for g in range(gens):
     print("  Avg %s" % mean)
     print("  Std %s" % std)
 
+    ########################### Safe Evoman Log / Performance Log ############################
+    file_aux = open(experiment_name+'')
     solutions = [pop, fits]
     env.update_solutions(solutions)
     env.save_state()
